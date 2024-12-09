@@ -16,11 +16,9 @@ format:
 #| include: false
 library(tidyverse)
 library(leaflet)
-library(purrr)
 library(kableExtra)
 library(gt)
 library(flextable)
-library(DT)
 library(reactable)
 library(plotly)
 library(scales)
@@ -93,7 +91,7 @@ org_children <- patients %>%
 #### Row {height="15%"}
 
 <!-- Количество мужчин -->
-##### Column 
+##### Column
 
 <!-- https://quarto.org/docs/dashboards/data-display.html#value-boxes -->
 ```{r}
@@ -108,7 +106,7 @@ list(
 ```
 
 <!-- Количество женщин -->
-##### Column 
+##### Column
 
 ```{r}
 #| label: Кол-во женщин
@@ -122,7 +120,7 @@ list(
 ```
 
 <!-- Количество детей -->
-##### Column 
+##### Column
 
 ```{r}
 #| label: Кол-во детей
@@ -196,15 +194,15 @@ ggplot(org_children, aes(x = "" , y = Count, fill = fct_inorder(STRAIN))) +
 diag <- patients %>% group_by(PAT_GROUP, mkb_name) %>%
   summarise(Count = n()) %>%
   ungroup() %>%
-  pivot_wider(names_from = "PAT_GROUP", values_from = "Count", values_fill = 0) %>% 
+  pivot_wider(names_from = "PAT_GROUP", values_from = "Count", values_fill = 0) %>%
   mutate(mkb_name = case_when(
     mkb_name == "Интерстициальный цистит (хронический)" ~ "Хронический цистит",
     mkb_name == "Необструктивный хронический пиелонефрит, связанный с рефлюксом" ~ "Хронический пиелонефрит",
     mkb_name == "Острый тубулоинтерстициальный нефрит" ~ "Острый нефрит",
     mkb_name == "Инфекция мочевыводящих путей без установленной локализации" ~ "Инфекция МВП",
-    TRUE ~ mkb_name  
+    TRUE ~ mkb_name
   ))
-         
+
 diag$mkb_name_x <- sapply(diag$mkb_name,
                       FUN = function(x) {paste(strwrap(x, width = 24), collapse = "<br>")})
 
@@ -215,7 +213,7 @@ add_trace(y = ~`Женщины, осложненные`, name = 'Женщины,
 add_trace(y = ~`Мужчины, неосложненные`, name = 'Мужчины, неосложненные') %>%
 add_trace(y = ~`Мужчины, осложненные`, name = 'Мужчины, осложненные') %>%
 layout(yaxis = list(title = 'Кол-во'), barmode = 'stack') %>%
-layout(xaxis = list(title = '' )) %>% 
+layout(xaxis = list(title = '' )) %>%
 layout(legend = list(orientation = 'h'))
 ```
 
@@ -303,8 +301,8 @@ colnames(citypat)[1] <- "Город"
 #| label: kable
 #| title: kable
 
-# https://cran.r-project.org/web/packages/kableExtra/vignettes/awesome_table_in_html.html 
-citypat %>% 
+# https://cran.r-project.org/web/packages/kableExtra/vignettes/awesome_table_in_html.html
+citypat %>%
   kbl(caption = "Распределение пациентов по городам") %>%
   kable_styling(bootstrap_options = c("striped"))
 ```
@@ -313,10 +311,10 @@ citypat %>%
 #| label: gt
 #| title: gt
 
-# https://gt.albert-rapp.de/ 
+# https://gt.albert-rapp.de/
 citypat %>%
   gt() %>%
-  tab_header(title = "Распределение пациентов по городам") %>% 
+  tab_header(title = "Распределение пациентов по городам") %>%
   opt_row_striping()
 ```
 
@@ -325,14 +323,14 @@ citypat %>%
 #| title: flextable
 
 # https://ardata-fr.github.io/flextable-book/
-  
-citypat %>% 
-  flextable() %>% 
+
+citypat %>%
+  flextable() %>%
   set_caption("Распределение пациентов по городам") %>%
   theme_zebra()
 ```
 
-<!-- Вторая страница -->
+
 # Набор данных
 
 <!-- https://glin.github.io/reactable -->
@@ -355,12 +353,12 @@ options(reactable.language = reactableLang(
 #| label: reacttable
 #| title: Список пациентов, включенных в исследование
 
-patients %>% 
-  select(-c("LATITUDE", "LONGITUDE")) %>% 
+patients %>%
+  select(-c("LATITUDE", "LONGITUDE")) %>%
   select(study_subject_id, PAT_GROUP, SEX, AGE, DATEBIRTH,
-         STRAIN, DATESTRAIN, 
-         CENTER, COUNTRY, CITYNAME, DATEFILL, 
-         DIAG_ICD, mkb_name, COMPL) %>% 
+         STRAIN, DATESTRAIN,
+         CENTER, COUNTRY, CITYNAME, DATEFILL,
+         DIAG_ICD, mkb_name, COMPL) %>%
   reactable(filterable = TRUE, searchable = TRUE, striped = TRUE,
             columns = list(
               study_subject_id = colDef(name = "ID", width = 64, defaultSortOrder = "asc"),
