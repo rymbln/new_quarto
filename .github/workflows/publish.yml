@@ -1,34 +1,40 @@
 on:
+  # Настройка запуска процесса на каждое событие push
   workflow_dispatch:
   push:
     branches: main
-
+# Название процесса
 name: Quarto Publish
 
+# Задачи, которые необходимо выполнить
 jobs:
+  # Задача сборки и публикации проекта
   build-deploy:
-    runs-on: ubuntu-latest
+    # Указание, что запускать нужно на ubuntu последней версии
+    runs-on: ubuntu:24.04
     permissions:
       contents: write
+    # Описание необходимых шагов сборки
     steps:
+      # Получение актуального состояния репозитория
       - name: Check out repository
         uses: actions/checkout@v4
-
+      # Установка Quarto
       - name: Set up Quarto
-        uses: quarto-dev/quarto-actions/setup@v2
-
+        uses: quarto-dev/quarto-actions/setup@v2.1.6
+      # Установка R
       - name: Install R
         uses: r-lib/actions/setup-r@v2
         with:
           r-version: '4.4.1'
-
+      # Установка необходимых для нашего проекта зависимостей
       - name: Install R Dependencies
         uses: r-lib/actions/setup-renv@v2
         with:
           cache-version: 1
-
+      # Компиляция и публикация дашборда
       - name: Render and Publish
-        uses: quarto-dev/quarto-actions/publish@v2
+        uses: quarto-dev/quarto-actions/publish@v2.1.6
         with:
           target: gh-pages
         env:
