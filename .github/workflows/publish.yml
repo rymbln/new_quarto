@@ -18,7 +18,7 @@ jobs:
     steps:
       # Установка необходимых пакетов в Ubuntu
       - name: Install libcurl
-        run: sudo apt install -y libcurl4-openssl-dev libfontconfig1-dev libcairo2-dev libharfbuzz-dev libfribidi-dev
+        run: sudo apt install -y libcurl4-openssl-dev libfontconfig1-dev libcairo2-dev libharfbuzz-dev libfribidi-dev libfreetype6-dev libpng-dev libtiff5-dev libjpeg-dev
       # Получение актуального состояния репозитория
       # https://github.com/actions/checkout/tree/main
       - name: Check out repository
